@@ -1,0 +1,14 @@
+{
+  "tr-TR": {
+    "on_guild_join": "Merhaba yeni ailem ! Dalgalar beni bu kıyıya attı. Ah, umarım size güzel bir mektup getirebilmişimdir...",
+    "on_guild_remove": "Görüşürüz sevgili ailem. Umarım sizi tekrar görebilirim. Beni yeni denizler, yeni dalgalar, yeni kıyılar bekliyor...",
+    "on_member_join": "Hoşgeldin ! Bu sunucuya geldiğin için oldukça şanslısın. Eğlenmeye bak...",
+    "on_member_join_v2": "Sunucuya yeni biri katıldı !"
+  },
+  "en-US": {
+    "on_guild_join": "Hello my new family! The waves threw me on this shore. Ah, I hope I brought you a nice letter...",
+    "on_guild_remove": "See you soon my dear family. I hope I can see you again. New seas, new waves, new shores await me...",
+    "on_member_join": "Welcome ! You are very lucky to have come to this server. Have fun...",
+    "on_member_join_v2": "New user joined to server !"
+  }
+}

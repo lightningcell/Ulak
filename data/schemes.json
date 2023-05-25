@@ -1,0 +1,11 @@
+{
+  "guild_scheme": {
+    "target-channel-ids": [],
+    "admin-channel-ids": [],
+    "accessible-roles": []
+  },
+  "error_scheme": {
+    "code": 404,
+    "message": "scheme not found"
+  }
+}
