@@ -14,8 +14,8 @@ class AdminCommands(commands.Cog):
             'admin_channel': 'admin-channel-ids'
         }
 
-    @checks.has_permission()
     @commands.command(name="set")
+    @commands.check(checks.text_command_has_permission)
     async def add(
             self,
             ctx: commands.Context,
@@ -28,27 +28,37 @@ class AdminCommands(commands.Cog):
         :param _type: ['role', 'target_channel', 'admin_channel']
         :param _object: Role or channel...
         """
-
-        key = self.keys[_type]
-
-        guild_data = utils.get_guild_info(ctx.guild.id)
-        objects = guild_data[key].copy()
-
-        if remove and str(_object.id) in objects:
-            objects.remove(str(_object.id))
+        if (
+                (not (_type == "role" and isinstance(_object, discord.Role)))
+                and
+                (not (_type in ("target_channel", "admin_channel") and isinstance(_object, discord.TextChannel)))
+        ):
+            await ctx.message.add_reaction("❌")
+            await ctx.reply(f"You had to text a {_type}, if you choose type as {_type}. (Or just use slash commands :))")
         else:
-            objects.append(str(_object.id))
+            key = self.keys[_type]
 
-        guild_data[key] = list(set(objects))
-        utils.update_guild({str(ctx.guild.id): guild_data})
+            guild_data = utils.get_guild_info(ctx.guild.id)
+            objects = guild_data[key].copy()
 
-        if remove:
-            await ctx.send(f"{_object.name} removed from {_type} list")
-        else:
-            await ctx.send(f"{_object.name} setted as {_type}")
+            if remove and str(_object.id) in objects:
+                objects.remove(str(_object.id))
+            else:
+                objects.append(str(_object.id))
 
-    @checks.has_permission()
+            guild_data[key] = list(set(objects))
+            utils.update_guild({str(ctx.guild.id): guild_data})
+            await ctx.message.add_reaction("✔")
+
+            if remove:
+                await ctx.reply(f"{_object.name} removed from {_type} list")
+            else:
+                await ctx.reply(
+                    f"{_object.name} setted as {_type}"
+                )
+
     @commands.command(name="unset")
+    @commands.check(checks.text_command_has_permission)
     async def delete(
             self,
             ctx: commands.Context,
@@ -63,8 +73,8 @@ class AdminCommands(commands.Cog):
         """
         await self.add(ctx, _type, _object, remove=True)
 
-    @checks.has_permission()
     @commands.command(name="show")
+    @commands.check(checks.text_command_has_permission)
     async def show(
             self,
             ctx: commands.Context,
@@ -74,6 +84,8 @@ class AdminCommands(commands.Cog):
         Shows the accessible roles, target channels and admin channels.
         :param _type: ['role', 'target_channel', 'admin_channel']
         """
+
+        await ctx.message.add_reaction("📨")
 
         if _type == 'all':
             modes = ['role', 'target_channel', 'admin_channel']
@@ -94,8 +106,9 @@ class AdminCommands(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error):
+        await ctx.message.add_reaction("💥")
         if isinstance(error, discord.ext.commands.CheckFailure):
-            utils.funny_log(f"{ctx.author.display_name} tried to run addrole function...")
+            utils.funny_log(f"{ctx.author.display_name} tried to run a command...")
 
         if isinstance(error, discord.ext.commands.MissingRequiredArgument):
             utils.funny_log(str(error))

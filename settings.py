@@ -11,7 +11,7 @@ load_dotenv()
 
 BASE_DIR = pathlib.Path(__file__).parent
 COMMANDS_DIR = BASE_DIR / "commands"
-COGS_DIR = BASE_DIR / "cogs"
+COGS_DIR = BASE_DIR / "text_commands"
 DATA_DIR = BASE_DIR / "data"
 DISCORD_BOT_TOKEN = os.environ.get("DISCORD_BOT_TOKEN")
 LOGGING_CONFIG = {

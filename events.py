@@ -1,10 +1,13 @@
 from discord.ext import commands
+from discord import app_commands
+import typing
+import settings
 import utils
 import discord
 
 
 class UlakEvents(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     @staticmethod
@@ -55,6 +58,21 @@ class UlakEvents(commands.Cog):
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member):
         await UlakEvents.p_on_member_join(member)
+
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):
+        await ctx.message.add_reaction("💥")
+        if isinstance(error, commands.CommandNotFound):
+            await ctx.reply(f"There is no prompt like that -> {ctx.message.content}",
+                            delete_after=3.5, mention_author=True)
+        elif isinstance(error, commands.CheckFailure):
+            await ctx.reply("You have no permission to use this command !!!!",
+                            delete_after=3.5, mention_author=True)
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await ctx.reply("It looks like you forgot somethings... You can use !help...",
+                            delete_after=3.5, mention_author=True)
+        else:
+            await ctx.reply("An unknown error occured. Sorry...", delete_after=3.5, mention_author=True)
 
 
 async def setup(bot):
